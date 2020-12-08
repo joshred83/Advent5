@@ -8,21 +8,31 @@ def bsp_parser (s, start=0, stop=128, lower_ch ='F', upper_ch='B'):
       #print("B/r", stop-1, s[1:])
       return stop - 1, s[1:]
 
-  midpoint = (stop - start)/2
+  midpoint = (stop - start)//2
   #print(midpoint)
   if s[0] == lower_ch:
     #print(s[0], s[1:], start, stop - midpoint)
-    return bsp_parser(s[1:], start=start, stop=stop - midpoint)
+    return bsp_parser(s[1:], 
+                      start=start, 
+                      stop=stop - midpoint, 
+                      lower_ch=lower_ch, 
+                      upper_ch=upper_ch)
   elif s[0] == upper_ch:
     #print(s[0], s[1:], start + midpoint, stop)
-    return bsp_parser(s[1:], start=start + midpoint, stop=stop)
+    return bsp_parser(s[1:], 
+                      start=start + midpoint, 
+                      stop=stop,
+                      lower_ch=lower_ch, 
+                      upper_ch=upper_ch)
 
 
-
+seats = []
 with open('boarding_passes') as f:
   for line in f:
     row, remainder = bsp_parser(line)
-    seat, _ = bsp_parser(remainder, 0, 8, 'R', 'L' )
+    seat, _ = bsp_parser(remainder, 0, 8, lower_ch='L', upper_ch='R')
+    seats.append((row*8) + seat)
 
 
-
+[print(s) for s in seats]
+print(min(seats), max(seats))
