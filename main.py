@@ -26,13 +26,15 @@ def bsp_parser (s, start=0, stop=128, lower_ch ='F', upper_ch='B'):
                       upper_ch=upper_ch)
 
 
-seats = []
+boarding_passes = set()
 with open('boarding_passes') as f:
   for line in f:
     row, remainder = bsp_parser(line)
     seat, _ = bsp_parser(remainder, 0, 8, lower_ch='L', upper_ch='R')
-    seats.append((row*8) + seat)
+    boarding_passes.add((row*8) + seat)
 
 
-[print(s) for s in seats]
-print(min(seats), max(seats))
+seats = set(range(min(boarding_passes), max(boarding_passes)))
+missing = seats - boarding_passes
+print(missing)
+
